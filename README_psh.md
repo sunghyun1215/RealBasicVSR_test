@@ -5,3 +5,4 @@
 - def train_step : gt_clean interpolate parameter change(scale_factor, view factor 0.5)
 ### .local/lib/python3.8/site-packages/mmedit/models/backbones/sr_backbones/basicvsr_net.py:
 - def __init__ : self.upsample2 layer pixelshuffle scale_factor change from 2 to 1
+- def __init__ : self.img_upsample layer Upsample scale_factor from 4 to 2

@@ -27,7 +27,7 @@ train_pipeline = [
         io_backend='disk',
         key='gt',
         channel_order='rgb'),
-    dict(type='FixedCrop', keys=['gt'], crop_size=(128, 128)),
+    dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
     dict(type='RescaleToZeroOne', keys=['gt']),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='horizontal'),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='vertical'),
@@ -242,7 +242,7 @@ data = dict(
                     io_backend='disk',
                     key='gt',
                     channel_order='rgb'),
-                dict(type='FixedCrop', keys=['gt'], crop_size=(128, 128)),
+                dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
                 dict(type='RescaleToZeroOne', keys=['gt']),
                 dict(
                     type='Flip',
