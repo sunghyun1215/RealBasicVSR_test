@@ -1,6 +1,6 @@
 exp_name = 'realbasicvsr_c64b20_1x30x8_lr5e-5_150k_reds'
 
-scale = 4
+scale = 2
 
 # model settings
 model = dict(
@@ -13,6 +13,7 @@ model = dict(
         dynamic_refine_thres=255,  # change to 5 for test
         spynet_pretrained='https://download.openmmlab.com/mmediting/restorers/'
         'basicvsr/spynet_20210409-c6c1bd09.pth',
+        # spynet_pretrained = None,
         is_fix_cleaning=False,
         is_sequential_cleaning=False),
     discriminator=dict(
@@ -61,7 +62,8 @@ train_pipeline = [
         io_backend='disk',
         key='gt',
         channel_order='rgb'),
-    dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
+    # dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
+    dict(type='FixedCrop', keys=['gt'], crop_size=(128, 128)),
     dict(type='RescaleToZeroOne', keys=['gt']),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='horizontal'),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='vertical'),
@@ -272,11 +274,11 @@ data = dict(
         times=150,
         dataset=dict(
             type=train_dataset_type,
-            lq_folder='data/REDS/train_sharp_sub',
-            gt_folder='data/REDS/train_sharp_sub',
+            lq_folder='data/train_sharp_sub',
+            gt_folder='data/train_sharp_sub',
             num_input_frames=15,
             pipeline=train_pipeline,
-            scale=4,
+            scale=2,
             test_mode=False)),
     # val
     val=dict(
@@ -284,7 +286,7 @@ data = dict(
         lq_folder='data/UDM10/BIx4',
         gt_folder='data/UDM10/GT',
         pipeline=val_pipeline,
-        scale=4,
+        scale=2,
         test_mode=True),
     # test
     test=dict(
@@ -292,7 +294,7 @@ data = dict(
         lq_folder='data/VideoLQ',
         gt_folder='data/VideoLQ',
         pipeline=test_pipeline,
-        scale=4,
+        scale=2,
         test_mode=True),
 )
 
@@ -302,7 +304,8 @@ optimizers = dict(
     discriminator=dict(type='Adam', lr=1e-4, betas=(0.9, 0.99)))
 
 # learning policy
-total_iters = 150000
+# total_iters = 150000
+total_iters = 1000
 lr_config = dict(policy='Step', by_epoch=False, step=[400000], gamma=1)
 
 checkpoint_config = dict(interval=5000, save_optimizer=True, by_epoch=False)
@@ -330,6 +333,7 @@ custom_hooks = [
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = f'./experiments/{exp_name}'
-load_from = 'https://download.openmmlab.com/mmediting/restorers/real_basicvsr/realbasicvsr_wogan_c64b20_2x30x8_lr1e-4_300k_reds_20211027-0e2ff207.pth'  # noqa
+# load_from = 'https://download.openmmlab.com/mmediting/restorers/real_basicvsr/realbasicvsr_wogan_c64b20_2x30x8_lr1e-4_300k_reds_20211027-0e2ff207.pth'  # noqa
+load_from = 'checkpoints/iter_1000.pth'
 resume_from = None
 workflow = [('train', 1)]

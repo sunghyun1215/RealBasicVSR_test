@@ -11,6 +11,8 @@ from mmedit.core import tensor2img
 
 from realbasicvsr.models.builder import build_model
 
+import time
+
 VIDEO_EXTENSIONS = ('.mp4', '.mov')
 
 
@@ -114,7 +116,11 @@ def main():
         else:
             if cuda_flag:
                 inputs = inputs.cuda()
+            t0 = time.time()
             outputs = model(inputs, test_mode=True)['output'].cpu()
+            torch.cuda.synchronize()
+            t1 = time.time()
+            print("===> Timer: %.4f sec." % (t1 - t0))
 
     if os.path.splitext(args.output_dir)[1] in VIDEO_EXTENSIONS:
         output_dir = os.path.dirname(args.output_dir)

@@ -128,3 +128,6 @@ mmedit/.mim
 
 # results
 results/
+
+# inputs
+data/
