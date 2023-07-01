@@ -1,4 +1,4 @@
-exp_name = 'realbasicvsr_wogan_c64b20_2x30x8_lr1e-4_300k_reds'
+exp_name = 'realbasicvsr_c64b20_1x30x8_lr5e-5_150k_reds'
 scale = 2
 model = dict(
     type='RealBasicVSR',
@@ -12,9 +12,35 @@ model = dict(
         'https://download.openmmlab.com/mmediting/restorers/basicvsr/spynet_20210409-c6c1bd09.pth',
         is_fix_cleaning=False,
         is_sequential_cleaning=False),
+    discriminator=dict(
+        type='UNetDiscriminatorWithSpectralNorm',
+        in_channels=3,
+        mid_channels=64,
+        skip_connection=True),
     pixel_loss=dict(type='L1Loss', loss_weight=1.0, reduction='mean'),
     cleaning_loss=dict(type='L1Loss', loss_weight=1.0, reduction='mean'),
+    perceptual_loss=dict(
+        type='PerceptualLoss',
+        layer_weights=dict({
+            '2': 0.1,
+            '7': 0.1,
+            '16': 1.0,
+            '25': 1.0,
+            '34': 1.0
+        }),
+        vgg_type='vgg19',
+        perceptual_weight=1.0,
+        style_weight=0,
+        norm_img=False),
+    gan_loss=dict(
+        type='GANLoss',
+        gan_type='vanilla',
+        loss_weight=0.05,
+        real_label_val=1.0,
+        fake_label_val=0),
     is_use_sharpened_gt_in_pixel=True,
+    is_use_sharpened_gt_in_percep=True,
+    is_use_sharpened_gt_in_gan=False,
     is_use_ema=True)
 train_cfg = dict()
 test_cfg = dict(metrics=['PSNR'], crop_border=0)
@@ -232,8 +258,8 @@ data = dict(
         times=150,
         dataset=dict(
             type='SRFolderMultipleGTDataset',
-            lq_folder='./data/infrared_sub',
-            gt_folder='./data/infrared_sub',
+            lq_folder='data/train_sharp_sub',
+            gt_folder='data/train_sharp_sub',
             num_input_frames=15,
             pipeline=[
                 dict(type='GenerateSegmentIndices', interval_list=[1]),
@@ -438,8 +464,8 @@ data = dict(
             test_mode=False)),
     val=dict(
         type='SRFolderMultipleGTDataset',
-        lq_folder='./data/UDM10/BIx2',
-        gt_folder='./data/UDM10/GT',
+        lq_folder='data/UDM10/BIx2',
+        gt_folder='data/UDM10/GT',
         pipeline=[
             dict(type='GenerateSegmentIndices', interval_list=[1]),
             dict(
@@ -463,8 +489,8 @@ data = dict(
         test_mode=True),
     test=dict(
         type='SRFolderMultipleGTDataset',
-        lq_folder='./data/VideoLQ',
-        gt_folder='./data/VideoLQ',
+        lq_folder='data/VideoLQ',
+        gt_folder='data/VideoLQ',
         pipeline=[
             dict(
                 type='GenerateSegmentIndices',
@@ -481,8 +507,10 @@ data = dict(
         ],
         scale=2,
         test_mode=True))
-optimizers = dict(generator=dict(type='Adam', lr=0.0001, betas=(0.9, 0.99)))
-total_iters = 5000
+optimizers = dict(
+    generator=dict(type='Adam', lr=5e-05, betas=(0.9, 0.99)),
+    discriminator=dict(type='Adam', lr=0.0001, betas=(0.9, 0.99)))
+total_iters = 20000
 lr_config = dict(policy='Step', by_epoch=False, step=[400000], gamma=1)
 checkpoint_config = dict(interval=5000, save_optimizer=True, by_epoch=False)
 evaluation = dict(interval=5000, save_image=False, gpu_collect=True)
@@ -502,8 +530,8 @@ custom_hooks = [
 ]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './experiments/realbasicvsr_wogan_c64b20_2x30x8_lr1e-4_300k_reds'
-load_from = None
+work_dir = './experiments/realbasicvsr_c64b20_1x30x8_lr5e-5_150k_reds'
+load_from = 'checkpoints/iter_20000.pth'
 resume_from = None
 workflow = [('train', 1)]
 gpus = 1

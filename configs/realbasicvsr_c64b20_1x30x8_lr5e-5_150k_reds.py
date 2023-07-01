@@ -62,8 +62,8 @@ train_pipeline = [
         io_backend='disk',
         key='gt',
         channel_order='rgb'),
-    dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
-    # dict(type='FixedCrop', keys=['gt'], crop_size=(128, 128)),
+    # dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
+    dict(type='FixedCrop', keys=['gt'], crop_size=(128, 128)),
     dict(type='RescaleToZeroOne', keys=['gt']),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='horizontal'),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='vertical'),
@@ -264,8 +264,11 @@ test_pipeline = [
 
 data = dict(
     workers_per_gpu=10,
-    train_dataloader=dict(samples_per_gpu=1, drop_last=True),
-    val_dataloader=dict(samples_per_gpu=1),
+    # train_dataloader=dict(samples_per_gpu=1, drop_last=True),
+    train_dataloader=dict(
+        samples_per_gpu=2, drop_last=True, persistent_workers=False),
+    # val_dataloader=dict(samples_per_gpu=1),
+    val_dataloader=dict(samples_per_gpu=1, persistent_workers=False),
     test_dataloader=dict(samples_per_gpu=1, workers_per_gpu=1),
 
     # train
@@ -283,7 +286,7 @@ data = dict(
     # val
     val=dict(
         type=val_dataset_type,
-        lq_folder='data/UDM10/BIx4',
+        lq_folder='data/UDM10/BIx2',
         gt_folder='data/UDM10/GT',
         pipeline=val_pipeline,
         scale=2,
@@ -305,7 +308,7 @@ optimizers = dict(
 
 # learning policy
 # total_iters = 150000
-total_iters = 1000
+total_iters = 20000
 lr_config = dict(policy='Step', by_epoch=False, step=[400000], gamma=1)
 
 checkpoint_config = dict(interval=5000, save_optimizer=True, by_epoch=False)
@@ -334,6 +337,6 @@ dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = f'./experiments/{exp_name}'
 # load_from = 'https://download.openmmlab.com/mmediting/restorers/real_basicvsr/realbasicvsr_wogan_c64b20_2x30x8_lr1e-4_300k_reds_20211027-0e2ff207.pth'  # noqa
-load_from = 'checkpoints/iter_1000.pth'
+load_from = 'checkpoints/iter_20000.pth'
 resume_from = None
 workflow = [('train', 1)]

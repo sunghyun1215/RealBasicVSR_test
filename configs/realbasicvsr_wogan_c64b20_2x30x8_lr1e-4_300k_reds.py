@@ -36,8 +36,8 @@ train_pipeline = [
         io_backend='disk',
         key='gt',
         channel_order='rgb'),
-    dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
-    # dict(type='FixedCrop', keys=['gt'], crop_size=(128, 128)),
+    # dict(type='FixedCrop', keys=['gt'], crop_size=(256, 256)),
+    dict(type='FixedCrop', keys=['gt'], crop_size=(128, 128)),
     dict(type='RescaleToZeroOne', keys=['gt']),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='horizontal'),
     dict(type='Flip', keys=['gt'], flip_ratio=0.5, direction='vertical'),
@@ -249,8 +249,8 @@ data = dict(
         times=150,
         dataset=dict(
             type=train_dataset_type,
-            lq_folder='./data/train_sharp_sub',
-            gt_folder='./data/train_sharp_sub',
+            lq_folder='./data/infrared_sub',
+            gt_folder='./data/infrared_sub',
             num_input_frames=15,
             pipeline=train_pipeline,
             scale=2,
@@ -258,7 +258,7 @@ data = dict(
     # val
     val=dict(
         type=val_dataset_type,
-        lq_folder='./data/UDM10/BIx4',
+        lq_folder='./data/UDM10/BIx2',
         gt_folder='./data/UDM10/GT',
         pipeline=val_pipeline,
         scale=2,
@@ -278,15 +278,17 @@ optimizers = dict(generator=dict(type='Adam', lr=1e-4, betas=(0.9, 0.99)))
 
 # learning policy
 # total_iters = 300000
-total_iters = 1000
+total_iters = 5000
 lr_config = dict(policy='Step', by_epoch=False, step=[400000], gamma=1)
 
 checkpoint_config = dict(interval=5000, save_optimizer=True, by_epoch=False)
 
 # remove gpu_collect=True in non distributed training
 evaluation = dict(interval=5000, save_image=False, gpu_collect=True)
+# evaluation = dict(interval=1, save_image=False, gpu_collect=True)
 log_config = dict(
     interval=100,
+    # interval=1,
     hooks=[
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook'),

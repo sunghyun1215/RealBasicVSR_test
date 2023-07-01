@@ -129,22 +129,22 @@ def main_extract_subimages(args):
     opt['compression_level'] = args.compression_level
 
     # HR images
-    opt['input_folder'] = osp.join(args.data_root, 'train_sharp')
-    opt['save_folder'] = osp.join(args.data_root, 'train_sharp_sub')
+    opt['input_folder'] = osp.join(args.data_root, 'infrared')
+    opt['save_folder'] = osp.join(args.data_root, 'infrared_sub')
     opt['crop_size'] = args.crop_size
     opt['step'] = args.step
     opt['thresh_size'] = args.thresh_size
     extract_subimages(opt)
 
-    for scale in args.scales:
-        opt['input_folder'] = osp.join(args.data_root,
-                                       f'train_sharp_bicubic/X{scale}')
-        opt['save_folder'] = osp.join(args.data_root,
-                                      f'train_sharp_bicubic/X{scale}_sub')
-        opt['crop_size'] = args.crop_size // scale
-        opt['step'] = args.step // scale
-        opt['thresh_size'] = args.thresh_size // scale
-        extract_subimages(opt)
+    # for scale in args.scales:
+    #     opt['input_folder'] = osp.join(args.data_root,
+    #                                    f'train_sharp_bicubic/X{scale}')
+    #     opt['save_folder'] = osp.join(args.data_root,
+    #                                   f'train_sharp_bicubic/X{scale}_sub')
+    #     opt['crop_size'] = args.crop_size // scale
+    #     opt['step'] = args.step // scale
+    #     opt['thresh_size'] = args.thresh_size // scale
+    #     extract_subimages(opt)
 
 
 def parse_args():
