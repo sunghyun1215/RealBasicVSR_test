@@ -278,7 +278,7 @@ optimizers = dict(generator=dict(type='Adam', lr=1e-4, betas=(0.9, 0.99)))
 
 # learning policy
 # total_iters = 300000
-total_iters = 5000
+total_iters = 20000
 lr_config = dict(policy='Step', by_epoch=False, step=[400000], gamma=1)
 
 checkpoint_config = dict(interval=5000, save_optimizer=True, by_epoch=False)

@@ -129,8 +129,8 @@ def main_extract_subimages(args):
     opt['compression_level'] = args.compression_level
 
     # HR images
-    opt['input_folder'] = osp.join(args.data_root, 'infrared')
-    opt['save_folder'] = osp.join(args.data_root, 'infrared_sub')
+    opt['input_folder'] = osp.join(args.data_root, 'train_sharp')
+    opt['save_folder'] = osp.join(args.data_root, 'train_sharp_sub')
     opt['crop_size'] = args.crop_size
     opt['step'] = args.step
     opt['thresh_size'] = args.thresh_size

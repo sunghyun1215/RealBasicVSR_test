@@ -2,14 +2,18 @@ import cv2
 
 
 def main():
-    camera = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(1)
 
-    # while True:
+    video.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+    video.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+    print("video start")
     
-    ret_val, img = camera.read()
-    results = img
-    cv2.imshow("img",img)
-    cv2.waitKey(0)
+    while True:
+    
+        ret_val, img = video.read()
+
+        cv2.imshow("img",img)
+        cv2.waitKey(1)
 
 
 if __name__ == '__main__':

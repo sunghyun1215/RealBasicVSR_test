@@ -258,8 +258,8 @@ data = dict(
         times=150,
         dataset=dict(
             type='SRFolderMultipleGTDataset',
-            lq_folder='data/train_sharp_sub',
-            gt_folder='data/train_sharp_sub',
+            lq_folder='data/infrared_sub',
+            gt_folder='data/infrared_sub',
             num_input_frames=15,
             pipeline=[
                 dict(type='GenerateSegmentIndices', interval_list=[1]),
@@ -531,7 +531,7 @@ custom_hooks = [
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './experiments/realbasicvsr_c64b20_1x30x8_lr5e-5_150k_reds'
-load_from = 'checkpoints/iter_20000.pth'
+load_from = 'checkpoints/iter_20000_infrared.pth'
 resume_from = None
 workflow = [('train', 1)]
 gpus = 1

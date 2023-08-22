@@ -482,7 +482,7 @@ data = dict(
         scale=2,
         test_mode=True))
 optimizers = dict(generator=dict(type='Adam', lr=0.0001, betas=(0.9, 0.99)))
-total_iters = 5000
+total_iters = 20000
 lr_config = dict(policy='Step', by_epoch=False, step=[400000], gamma=1)
 checkpoint_config = dict(interval=5000, save_optimizer=True, by_epoch=False)
 evaluation = dict(interval=5000, save_image=False, gpu_collect=True)
